@@ -218,6 +218,7 @@ int main(int argc, char **argv)
         }
     }
 
+#ifndef BOARD_BOOTIMAGE_NO_ANDROID_MAGIC
     /* put a hash of the contents in the header so boot images can be
      * differentiated based on their first 2k.
      */
@@ -231,6 +232,7 @@ int main(int argc, char **argv)
     sha = SHA_final(&ctx);
     memcpy(hdr.id, sha,
            SHA_DIGEST_SIZE > sizeof(hdr.id) ? sizeof(hdr.id) : SHA_DIGEST_SIZE);
+#endif
 
     fd = open(bootimg, O_CREAT | O_TRUNC | O_WRONLY, 0644);
     if(fd < 0) {
@@ -238,8 +240,10 @@ int main(int argc, char **argv)
         return 1;
     }
 
+#ifndef BOARD_BOOTIMAGE_NO_ANDROID_MAGIC
     if(write(fd, &hdr, sizeof(hdr)) != sizeof(hdr)) goto fail;
     if(write_padding(fd, pagesize, sizeof(hdr))) goto fail;
+#endif
 
     if(write(fd, kernel_data, hdr.kernel_size) != hdr.kernel_size) goto fail;
     if(write_padding(fd, pagesize, hdr.kernel_size)) goto fail;
