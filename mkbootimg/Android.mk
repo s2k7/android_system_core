@@ -2,6 +2,10 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
+ ifdef BOARD_BOOTIMAGE_NO_ANDROID_MAGIC
+     LOCAL_CFLAGS += -DBOARD_BOOTIMAGE_NO_ANDROID_MAGIC
+ endif
+
 LOCAL_SRC_FILES := mkbootimg.c
 LOCAL_STATIC_LIBRARIES := libmincrypt
 
